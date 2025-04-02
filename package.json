@@ -1,0 +1,17 @@
+{
+	"name": "datavault-insight-stream",
+	"version": "1.0.0",
+	"description": "A next.js and fastapi-powered analytical SaaS tool for real-time data visualization and insights",
+	"main": "index.js",
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start"
+	},
+	"dependencies": {
+		"next": "latest",
+		"react": "latest",
+		"react-dom": "latest",
+		"typescript": "latest"
+	}
+}
