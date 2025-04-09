@@ -1,31 +1,24 @@
 import React, { useEffect, useState } from 'react';
 
 interface RealTimeChartProps {
-  dataEndpoint: string;
+    data: any[];
 }
 
-const RealTimeChart: React.FC<RealTimeChartProps> = ({ dataEndpoint }) => {
-  const [chartData, setChartData] = useState<number[]>([]);
+const RealTimeChart: React.FC<RealTimeChartProps> = ({ data }) => {
+    const [chartData, setChartData] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(dataEndpoint);
-      const data = await response.json();
-      setChartData(data);
-    };
+    useEffect(() => {
+        if (data) {
+            setChartData(data);
+        }
+    }, [data]);
 
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
-  }, [dataEndpoint]);
-
-  return (
-    <div>
-      <h2>Real-Time Data Chart</h2>
-      {/* Replace with an actual chart library component */}
-      <pre>{JSON.stringify(chartData, null, 2)}</pre>
-    </div>
-  );
+    return (
+        <div>
+            <h2>Real-Time Data Chart</h2>
+            <div>{chartData.length > 0 ? 'Render chart here' : 'No data available'}</div>
+        </div>
+    );
 };
 
 export default RealTimeChart;
