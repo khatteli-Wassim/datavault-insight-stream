@@ -1,30 +1,22 @@
-// API route for real-time data synchronization
 import { NextApiRequest, NextApiResponse } from 'next';
 
-let clients: any[] = [];
+const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
+    try {
+        const data = await fetchFromExternalSource();
+        res.status(200).json(data);
+    } catch (error) {
+        console.error('Error in data-fetch:', error);
+        res.status(500).json({ error: 'Failed to fetch data' });
+    }
+};
 
-function sendEventsToAll(newData: any) {
-  clients.forEach(client => client.res.write(`data: ${JSON.stringify(newData)}\n\n`));
+async function fetchFromExternalSource() {
+    // Simulate an external data fetch
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve([{ id: 1, value: 100 }, { id: 2, value: 200 }]);
+        }, 1000);
+    });
 }
-
-async function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
-  clients.push({ req, res });
-
-  req.on('close', () => {
-    clients = clients.filter(client => client.req !== req);
-  });
-}
-
-setInterval(() => {
-  const newData = {
-    timestamp: new Date().toISOString(),
-    value: Math.random() * 100,
-  };
-  sendEventsToAll(newData);
-}, 2000);
 
 export default handler;
