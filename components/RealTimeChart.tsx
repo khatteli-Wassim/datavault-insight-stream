@@ -1,39 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Line } from 'react-chartjs-2';
 
-interface RealTimeChartProps {
-    dataSourceUrl: string;
-}
-
-const RealTimeChart: React.FC<RealTimeChartProps> = ({ dataSourceUrl }) => {
-    const [data, setData] = useState([]);
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch(dataSourceUrl);
-            if (response.ok) {
-                const result = await response.json();
-                setData(result);
-            } else {
-                console.error('Failed to fetch data:', response.statusText);
+const RealTimeChart = ({ data }) => {
+    const options = {
+        scales: {
+            y: {
+                beginAtZero: true
             }
-        } catch (error) {
-            console.error('Error fetching data:', error);
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    usePointStyle: true
+                }
+            }
         }
     };
 
-    useEffect(() => {
-        fetchData();
-        const intervalId = setInterval(fetchData, 5000); // Refresh data every 5 seconds
-        return () => clearInterval(intervalId);
-    }, [dataSourceUrl]);
+    const formattedData = {
+        labels: data.labels,
+        datasets: data.datasets.map(dataset => ({
+            ...dataset,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            pointBackgroundColor: '#fff',
+            pointBorderColor: 'rgba(75, 192, 192, 1)'
+        }))
+    };
 
-    return (
-        <div>
-            <h2>Real-Time Data Chart</h2>
-            {/* Placeholder for chart rendering logic */}
-            <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-    );
+    return <Line data={formattedData} options={options} />;
 };
 
 export default RealTimeChart;
