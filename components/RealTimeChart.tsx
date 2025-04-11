@@ -1,34 +1,41 @@
-import React from 'react';
-import { Line } from 'react-chartjs-2';
+import React, { useEffect } from 'react';
+import { Chart } from 'chart.js';
 
-const RealTimeChart = ({ data }) => {
-    const options = {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        },
-        plugins: {
-            legend: {
-                labels: {
-                    usePointStyle: true
+const RealTimeChart: React.FC = () => {
+    useEffect(() => {
+        const ctx = document.getElementById('chart') as HTMLCanvasElement;
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Real-time Data',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.4    // Added smoothing effect
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'realtime',
+                        realtime: {
+                            delay: 2000
+                        }
+                    }
                 }
             }
-        }
-    };
+        });
 
-    const formattedData = {
-        labels: data.labels,
-        datasets: data.datasets.map(dataset => ({
-            ...dataset,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            pointBackgroundColor: '#fff',
-            pointBorderColor: 'rgba(75, 192, 192, 1)'
-        }))
-    };
+        return () => {
+            myChart.destroy();
+        };
+    }, []);
 
-    return <Line data={formattedData} options={options} />;
+    return <canvas id="chart" />;
 };
 
 export default RealTimeChart;
